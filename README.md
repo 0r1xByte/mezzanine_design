@@ -3,8 +3,6 @@
 Designs single and multi-tier mezzanine floors, runs the structural calculations, generates
 material quantities and quotations, and exports the floor model to CAD.
 
-See [PLAN.md](PLAN.md) for the full build plan and architecture.
-
 ## What it looks like
 
 An enquiry produces a real structural design and BOM in seconds — steel sections sized against a
