@@ -38,6 +38,7 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true"
+          VITE_DEMO_MODE: "true"
 
       - uses: actions/configure-pages@v5
 

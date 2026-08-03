@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { DesignRevision, Project } from './api';
+import { DemoBanner } from './components/DemoBanner';
 import { TitleBlock } from './components/TitleBlock';
 import { WorkflowRail } from './components/WorkflowRail';
 import { EnquiryScreen } from './screens/EnquiryScreen';
@@ -69,8 +70,11 @@ export default function App() {
         { label: 'Updated', value: '-' },
       ];
 
+  const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
   return (
     <div className="app-shell">
+      {isDemoMode && <DemoBanner />}
       <div className="app-frame">
         <TitleBlock
           name={project?.name ?? 'New enquiry'}

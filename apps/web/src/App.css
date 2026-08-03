@@ -2,11 +2,11 @@
   min-height: 100%;
   padding: 32px 24px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .app-shell .app-frame {
   width: 100%;
   max-width: 1160px;
-  align-self: flex-start;
 }

@@ -1,0 +1,19 @@
+.demo-banner {
+  max-width: 1160px;
+  margin: 0 auto 16px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.demo-banner code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+}

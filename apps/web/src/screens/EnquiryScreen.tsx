@@ -33,7 +33,14 @@ export function EnquiryScreen({ onCreated }: EnquiryScreenProps) {
       });
       onCreated(project, revision);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      if (err instanceof TypeError) {
+        setError(
+          "Couldn't reach the API. If you're on the GitHub Pages preview, this needs apps/api " +
+            'and services/calc-engine running locally — see the repo README.',
+        );
+      } else {
+        setError(err instanceof Error ? err.message : 'Something went wrong.');
+      }
     } finally {
       setSubmitting(false);
     }
