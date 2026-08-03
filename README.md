@@ -16,6 +16,11 @@ rule-based simplified code check, a column grid, and a priced quote with PDF/DXF
 |---|---|
 | ![Design and BOM screen](docs/screenshots/02-design-bom.png) | ![Quote screen](docs/screenshots/04-quote.png) |
 
+The Quote screen's "Download sales drawing (DXF)" button pulls the plan view straight from
+`services/calc-engine` — boundary, column grid, and (when present) obstructions:
+
+![Sales drawing example, rendered from the DXF export](docs/screenshots/05-drawing.png)
+
 A static preview of the frontend (no backend behind it) is deployed to
 [0r1xbyte.github.io/mezzanine_design](https://0r1xbyte.github.io/mezzanine_design/) — see
 [apps/web's README](apps/web/README.md) for what that preview can and can't do, and how to run the

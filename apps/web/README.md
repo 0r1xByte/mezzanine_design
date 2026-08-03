@@ -8,6 +8,10 @@ exports.
 |---|---|---|---|
 | ![Enquiry](../../docs/screenshots/01-enquiry.png) | ![Geometry](../../docs/screenshots/03-geometry.png) | ![Design & BOM](../../docs/screenshots/02-design-bom.png) | ![Quote](../../docs/screenshots/04-quote.png) |
 
+The Quote screen's DXF download produces the sales drawing directly from `services/calc-engine`:
+
+![Sales drawing example](../../docs/screenshots/05-drawing.png)
+
 ## What this actually is right now
 
 This app is a thin client over two backend services — it does not run any structural calculations
