@@ -52,6 +52,35 @@ export interface Vertex {
   y: number;
 }
 
+export interface Obstruction {
+  boundary: Vertex[];
+  obstruction_type: string;
+}
+
+export type ZoneType = 'no_go' | 'height_restricted' | 'mandatory_clear';
+
+export interface ConstraintZone {
+  boundary: Vertex[];
+  zone_type: ZoneType;
+  max_height_m?: number | null;
+}
+
+export interface TierGeometry {
+  boundary: Vertex[];
+  obstructions: Obstruction[];
+  constraint_zones: ConstraintZone[];
+  clear_height_m: number;
+}
+
+export interface GeometryInput {
+  tiers: TierGeometry[];
+}
+
+export interface LoadCase {
+  imposed_kn_m2: number;
+  superimposed_kn_m2: number;
+}
+
 export interface DesignRevision {
   id: string;
   projectId: string;
@@ -59,8 +88,8 @@ export interface DesignRevision {
   status: string;
   createdAt: string;
   input: {
-    geometry: { tiers: { boundary: Vertex[]; clear_height_m: number }[] };
-    loads?: { imposed_kn_m2: number; superimposed_kn_m2: number };
+    geometry: GeometryInput;
+    loads?: LoadCase;
   };
   output: DesignOutput;
 }
@@ -115,40 +144,13 @@ export function createProject(input: {
   return request('/projects', { method: 'POST', body: JSON.stringify(input) });
 }
 
-export interface CreateDesignRevisionInput {
-  widthM: number;
-  depthM: number;
-  clearHeightM: number;
-  imposedKnM2: number;
-  superimposedKnM2: number;
-}
-
-export function createDesignRevision(
+export function createDesignRevisionFromGeometry(
   projectId: string,
-  input: CreateDesignRevisionInput,
+  input: { geometry: GeometryInput; loads: LoadCase },
 ): Promise<DesignRevision> {
-  const body = {
-    geometry: {
-      tiers: [
-        {
-          boundary: [
-            { x: 0, y: 0 },
-            { x: input.widthM, y: 0 },
-            { x: input.widthM, y: input.depthM },
-            { x: 0, y: input.depthM },
-          ],
-          clear_height_m: input.clearHeightM,
-        },
-      ],
-    },
-    loads: {
-      imposed_kn_m2: input.imposedKnM2,
-      superimposed_kn_m2: input.superimposedKnM2,
-    },
-  };
   return request(`/projects/${projectId}/design-revisions`, {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: JSON.stringify(input),
   });
 }
 
