@@ -55,3 +55,12 @@ PLAN.md Section 4's revision-model note. `Quote` references a `DesignRevision`.
 Quote totals (subtotal after markup, contingency, installation, grand total) are computed on read
 from `lineItems` + `markupPercent`/`contingencyPercent`/`installationTotal`, not stored, so editing
 any of those inputs keeps the numbers consistent without a re-save step.
+
+- `GET /projects/:id/design-revisions/:revisionNumber/drawing.dxf` — proxies to
+  `services/calc-engine`'s `/design/dxf` using the revision's stored input, so drawings stay in sync
+  with the exact design that was run (Python owns DXF generation end to end — see the architecture
+  note in memory; apps/api never re-implements drawing geometry).
+- `GET /projects/:id/design-revisions/:revisionNumber/material-takeoff.csv` — the revision's BOM as
+  a CSV.
+- `GET /projects/:id/design-revisions/:revisionNumber/quote/pdf` — a quotation PDF (line items by
+  category, totals, assumptions/exclusions) rendered with `pdfkit` from the persisted `Quote`.

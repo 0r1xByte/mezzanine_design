@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import { designRevisionRoutes } from './routes/design-revisions.js';
+import { documentRoutes } from './routes/documents.js';
 import { healthRoutes } from './routes/health.js';
 import { priceBookRoutes } from './routes/price-book.js';
 import { projectRoutes } from './routes/projects.js';
@@ -12,6 +13,7 @@ await app.register(projectRoutes);
 await app.register(designRevisionRoutes);
 await app.register(priceBookRoutes);
 await app.register(quoteRoutes);
+await app.register(documentRoutes);
 
 const port = Number(process.env.PORT ?? 3001);
 
