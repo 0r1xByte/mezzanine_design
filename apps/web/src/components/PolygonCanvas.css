@@ -1,0 +1,163 @@
+.polygon-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.polygon-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.polygon-toolbar select {
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.polygon-inline-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+}
+
+.polygon-inline-field input {
+  width: 70px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 7px;
+}
+
+.polygon-hint {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+
+.polygon-btn-sm {
+  width: auto;
+  margin-top: 0;
+  padding: 7px 12px;
+}
+
+.polygon-svg {
+  width: 100%;
+  height: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.polygon-gridline {
+  stroke: var(--grid-line);
+  stroke-width: 0.02;
+}
+
+.polygon-boundary {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 0.08;
+}
+
+.polygon-obstruction {
+  fill: var(--warn-soft);
+  stroke: var(--warn);
+  stroke-width: 0.06;
+  stroke-dasharray: 0.15 0.1;
+}
+
+.polygon-zone {
+  stroke-width: 0.06;
+  stroke-dasharray: 0.1 0.1;
+}
+
+.polygon-zone-no_go {
+  fill: var(--bad-soft);
+  stroke: var(--bad);
+}
+
+.polygon-zone-height_restricted {
+  fill: rgba(181, 116, 14, 0.12);
+  stroke: var(--warn);
+}
+
+.polygon-zone-mandatory_clear {
+  fill: var(--good-soft);
+  stroke: var(--good);
+}
+
+.polygon-draft {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 0.06;
+  stroke-dasharray: 0.1 0.1;
+}
+
+.polygon-vertex {
+  cursor: grab;
+}
+
+.polygon-vertex-boundary {
+  fill: var(--accent);
+}
+
+.polygon-vertex-obstruction {
+  fill: var(--warn);
+}
+
+.polygon-vertex-zone {
+  fill: var(--bad);
+}
+
+.polygon-vertex-draft {
+  fill: var(--ink-muted);
+  cursor: default;
+}
+
+.polygon-shape-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.polygon-shape-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 6px 4px 12px;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+}
+
+.polygon-shape-chip button {
+  background: none;
+  border: none;
+  color: var(--bad);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 3px 8px;
+}
+
+.polygon-tip {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  margin: 0;
+}
