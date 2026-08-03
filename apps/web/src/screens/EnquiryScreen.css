@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 520px;
+  max-width: 760px;
 }
 
 .enquiry-form label {
@@ -43,6 +43,17 @@
   gap: 0 14px;
 }
 
+.field-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 14px;
+  margin-bottom: 10px;
+}
+
+.field-grid-3 label {
+  margin-bottom: 0;
+}
+
 .form-error {
   background: var(--bad-soft);
   color: var(--bad);
@@ -50,4 +61,87 @@
   padding: 9px 10px;
   font-size: 12.5px;
   font-weight: 500;
+}
+
+.tier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tier-header h3 {
+  margin: 0;
+}
+
+.tier-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tier-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tier-tab.active {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.tier-tab-remove {
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.tier-tab-remove:hover {
+  opacity: 1;
+}
+
+.tier-tab-add {
+  color: var(--accent);
+  background: none;
+  border-style: dashed;
+}
+
+.tier-settings {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.tier-inline-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.tier-inline-field input {
+  width: 80px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
 }
