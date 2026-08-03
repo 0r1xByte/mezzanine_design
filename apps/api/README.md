@@ -13,6 +13,7 @@ Requires Postgres running (see `infra/docker-compose.yml`, or point `DATABASE_UR
 cp .env.example .env   # adjust DATABASE_URL / CALC_ENGINE_URL if needed
 npm install
 npx prisma migrate dev
+npm run seed            # populates the price book with starter rates
 npm run dev
 ```
 
@@ -40,3 +41,7 @@ PLAN.md Section 4's revision-model note. `Quote` references a `DesignRevision`.
 - `GET /projects/:id/design-revisions/:revisionNumber` — a single revision.
 - `GET /projects/:id/design-revisions/:revisionNumber/impact` — shorthand for comparing a revision
   against the one immediately before it.
+- `GET /price-book?region=default`
+- `POST /price-book`
+- `PUT /price-book/:id`
+- `DELETE /price-book/:id`
