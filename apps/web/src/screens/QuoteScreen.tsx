@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { drawingDxfUrl, generateQuote, getQuote, materialTakeoffCsvUrl, quotePdfUrl, type DesignRevision, type Quote } from '../api';
+import { generateQuote, getQuote, quotePdfUrl, type DesignRevision, type Quote } from '../api';
 import './QuoteScreen.css';
 
 interface QuoteScreenProps {
@@ -139,22 +139,6 @@ export function QuoteScreen({ projectId, revision }: QuoteScreenProps) {
             rel="noreferrer"
           >
             Export quotation PDF
-          </a>
-          <a
-            className="btn-secondary"
-            href={drawingDxfUrl(projectId, revision.revisionNumber)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Download sales drawing (DXF)
-          </a>
-          <a
-            className="btn-secondary"
-            href={materialTakeoffCsvUrl(projectId, revision.revisionNumber)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Download material take-off (CSV)
           </a>
         </div>
       </div>
