@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UsageType {
+  storage
+  office
+  retail
+}
+
+enum ProjectStatus {
+  enquiry
+  draft
+  reviewed
+  quoted
+}
+
+enum RevisionStatus {
+  draft
+  reviewed
+  superseded
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  name      String
+  client    String
+  usageType UsageType
+  status    ProjectStatus @default(enquiry)
+  createdAt DateTime @default(now())
+
+  revisions DesignRevision[]
+}
+
+// One immutable snapshot per computed state — see PLAN.md Section 4's revision-model note:
+// a single row per revision (full input + output payload) rather than independently
+// versioned entity chains, so "compare before/after" is just diffing two rows.
+model DesignRevision {
+  id            String   @id @default(uuid())
+  projectId     String
+  revisionNumber Int
+  createdAt     DateTime @default(now())
+  createdBy     String?
+  status        RevisionStatus @default(draft)
+
+  input  Json // GeometryInput + LoadCase + StructuralConfig
+  output Json // DesignResult (grid, member schedule, BOM, assumptions, warnings)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  quote   Quote?
+
+  @@unique([projectId, revisionNumber])
+}
+
+model PriceBookEntry {
+  id             String   @id @default(uuid())
+  category       String
+  description    String
+  unit           String
+  rate           Decimal  @db.Decimal(10, 2)
+  region         String   @default("default")
+  effectiveDate  DateTime @default(now())
+}
+
+model Quote {
+  id               String   @id @default(uuid())
+  designRevisionId String   @unique
+  lineItems        Json // LineItemCategory[] generated from BOM x price book
+  overrides        Json? // user edits layered on top of generated line items
+  markupPercent    Decimal  @db.Decimal(5, 2) @default(0)
+  contingencyPercent Decimal @db.Decimal(5, 2) @default(5)
+  installationTotal Decimal @db.Decimal(10, 2) @default(0)
+  assumptionsText  String
+  createdAt        DateTime @default(now())
+
+  designRevision DesignRevision @relation(fields: [designRevisionId], references: [id], onDelete: Cascade)
+}
