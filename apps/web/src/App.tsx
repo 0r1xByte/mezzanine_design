@@ -6,22 +6,14 @@ import { TitleBlock } from './components/TitleBlock';
 import { WorkflowRail } from './components/WorkflowRail';
 import { EnquiryScreen } from './screens/EnquiryScreen';
 import { GeometryScreen } from './screens/GeometryScreen';
+import { LoadsScreen } from './screens/LoadsScreen';
 import { DesignBomScreen } from './screens/DesignBomScreen';
+import { PricingScreen } from './screens/PricingScreen';
 import { QuoteScreen } from './screens/QuoteScreen';
+import { DrawingsScreen } from './screens/DrawingsScreen';
 import type { WorkflowStepId } from './data/workflow';
 import { useTheme } from './useTheme';
 import './App.css';
-
-function PlaceholderScreen({ label }: { label: string }) {
-  return (
-    <div className="main-pane">
-      <div className="pane-head">
-        <h2>{label}</h2>
-      </div>
-      <p className="pane-sub">Not yet implemented.</p>
-    </div>
-  );
-}
 
 function NoProjectScreen() {
   return (
@@ -49,16 +41,20 @@ export default function App() {
   let content: React.JSX.Element;
   if (activeStep === 'enquiry') {
     content = <EnquiryScreen onCreated={handleCreated} />;
+  } else if (activeStep === 'pricing') {
+    content = <PricingScreen />;
   } else if (!project || !revision) {
     content = <NoProjectScreen />;
   } else if (activeStep === 'geometry') {
     content = <GeometryScreen revision={revision} />;
+  } else if (activeStep === 'loads') {
+    content = <LoadsScreen projectId={project.id} revision={revision} onRevised={setRevision} />;
   } else if (activeStep === 'design') {
     content = <DesignBomScreen revision={revision} />;
   } else if (activeStep === 'quote') {
     content = <QuoteScreen projectId={project.id} revision={revision} />;
   } else {
-    content = <PlaceholderScreen label={activeStep} />;
+    content = <DrawingsScreen projectId={project.id} revision={revision} />;
   }
 
   const titleFields = project

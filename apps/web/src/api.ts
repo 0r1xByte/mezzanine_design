@@ -178,3 +178,54 @@ export function drawingDxfUrl(projectId: string, revisionNumber: number): string
 export function materialTakeoffCsvUrl(projectId: string, revisionNumber: number): string {
   return `${API_URL}/projects/${projectId}/design-revisions/${revisionNumber}/material-takeoff.csv`;
 }
+
+export interface ImpactReport {
+  fromRevision: number | null;
+  toRevision: number;
+  changedInputSections: string[];
+  memberChanges: string[];
+  metricChanges: string[];
+  warningChanges: string[];
+  unchanged: boolean;
+  note?: string;
+}
+
+export function getRevisionImpact(projectId: string, revisionNumber: number): Promise<ImpactReport> {
+  return request(`/projects/${projectId}/design-revisions/${revisionNumber}/impact`);
+}
+
+export interface PriceBookEntry {
+  id: string;
+  category: string;
+  description: string;
+  unit: string;
+  rate: string;
+  region: string;
+  effectiveDate: string;
+}
+
+export interface PriceBookEntryInput {
+  category: string;
+  description: string;
+  unit: string;
+  rate: number;
+}
+
+export function listPriceBook(): Promise<PriceBookEntry[]> {
+  return request('/price-book');
+}
+
+export function createPriceBookEntry(input: PriceBookEntryInput): Promise<PriceBookEntry> {
+  return request('/price-book', { method: 'POST', body: JSON.stringify(input) });
+}
+
+export function updatePriceBookEntry(
+  id: string,
+  input: Partial<PriceBookEntryInput>,
+): Promise<PriceBookEntry> {
+  return request(`/price-book/${id}`, { method: 'PUT', body: JSON.stringify(input) });
+}
+
+export function deletePriceBookEntry(id: string): Promise<void> {
+  return request(`/price-book/${id}`, { method: 'DELETE' });
+}
