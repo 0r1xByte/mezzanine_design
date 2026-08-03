@@ -5,8 +5,10 @@ material quantities and quotations, and exports the floor model to CAD.
 
 ## What it looks like
 
-An enquiry produces a real structural design and BOM in seconds — steel sections sized against a
-rule-based simplified code check, a column grid, and a priced quote with PDF/DXF/CSV exports.
+Draw the floor boundary (with arcs, obstructions, and constraint zones if the job needs them),
+across as many tiers as the building has, and an enquiry produces a real structural design and BOM
+in seconds — steel sections sized against a rule-based simplified code check, a column grid, and a
+priced quote with PDF/DXF/CSV exports.
 
 | Enquiry | Geometry & grid |
 |---|---|
@@ -42,14 +44,14 @@ infra/                 # docker-compose for local development (Postgres + all th
 
 ## Status
 
-The MVP described in PLAN.md Phases 1-4 is implemented end to end for the rectangular
-single-tier case: enquiry intake, geometry/grid generation with obstruction avoidance, simplified
-structural sizing, BOM, load changes with a change-impact report, a price-book admin UI, quote
-generation, and PDF/DXF/CSV exports. See each app's README for specifics — in particular
-[apps/web's README](apps/web/README.md), which is explicit about the one remaining gap: the
-polygon/obstruction drawing canvas (the enquiry form only produces a rectangular single-tier
-floor; `services/calc-engine` already supports arbitrary polygons via the API). PLAN.md Phase 5
-(pilot validation) hasn't started.
+The MVP described in PLAN.md Phases 1-4 is implemented end to end, including arbitrary
+polygon/multi-tier geometry: an interactive canvas for drawing the boundary, obstructions, and
+constraint zones (with an arc tool and exact segment-length entry), geometry/grid generation with
+obstruction avoidance, simplified structural sizing, BOM, load changes with a change-impact
+report, a price-book admin UI, quote generation, and PDF/DXF/CSV exports. See each app's README
+for specifics, in particular [apps/web's README](apps/web/README.md) for the one known limitation
+(arcs are tessellated into straight segments before the calc engine ever sees them — there's no
+true arc primitive downstream). PLAN.md Phase 5 (pilot validation) hasn't started.
 
 ## Running it locally
 

@@ -22,13 +22,17 @@ touches data will fail.
 
 **Implemented and wired to live data:**
 
-- **Enquiry** — a form (project name, client, usage type, rectangular width/depth/clear height,
-  imposed/superimposed loads) that calls `apps/api` to create a `Project` and its first
-  `DesignRevision`. The revision is computed synchronously by `services/calc-engine` before the
-  form returns.
-- **Geometry** — renders the boundary polygon and the generated column grid for the current
-  revision as an SVG, scaled from the real coordinates returned by the calc engine. Any flags
-  (e.g. a column nudged or omitted to clear an obstruction) are shown as callouts.
+- **Enquiry** — project info, an interactive polygon canvas per tier (click to place boundary
+  vertices, drag to move them, add obstructions and constraint zones, curve an edge with the arc
+  tool, type an exact segment length instead of eyeballing it), multi-tier support (add/remove
+  tiers, each with its own geometry and clear height), and loads. Submitting calls `apps/api` to
+  create a `Project` and its first `DesignRevision`, computed synchronously by
+  `services/calc-engine`. Arcs are tessellated into straight segments client-side before being
+  sent, since the calc engine's geometry model only accepts straight-edge polygons.
+- **Geometry** — renders the boundary polygon, obstructions, constraint zones, and the generated
+  column grid for the current revision as an SVG, scaled from the real coordinates returned by
+  the calc engine, with a tier selector for multi-tier revisions. Any flags (e.g. a column nudged
+  or omitted to clear an obstruction) are shown as callouts.
 - **Design & BOM** — the member schedule (mark, role, section, span, utilisation, pass/review
   status), summary stats (steel weight, deck area, checks passed, flags raised), and the
   assumptions list, all read directly from the revision's stored output.
@@ -41,13 +45,13 @@ touches data will fail.
   steel-weight and checks-passed deltas, new/resolved flags) via `apps/api`'s diff endpoint.
 - **Pricing** — a full price-book admin table: add, inline-edit, and delete rate entries. Talks
   directly to `apps/api`'s `/price-book` CRUD routes.
-- **Drawings** — the same boundary/grid preview as Geometry (shared `FloorPlanSvg` component),
-  plus the DXF and material take-off CSV downloads (moved here from Quote).
+- **Drawings** — the same boundary/grid preview as Geometry (shared `FloorPlanSvg` component,
+  with the same tier selector), plus the DXF and material take-off CSV downloads (moved here from
+  Quote).
 
-**Also not implemented:** the polygon/obstruction drawing canvas described in PLAN.md. The
-Enquiry form only produces a rectangular single-tier floor. `services/calc-engine` already
-supports arbitrary polygons, obstructions, and constraint zones through its API — the UI to draw
-them just doesn't exist yet.
+**Known limitation:** curved boundaries only exist as an editing convenience — the arc tool
+tessellates into a many-sided polygon before it's ever sent to the API, so the calc engine, BOM,
+and DXF all see (and report vertex counts for) straight segments, not a true arc primitive.
 
 ## Running it for real (full local stack)
 
@@ -112,22 +116,26 @@ above. If/when the backend services get real hosting, point `VITE_API_URL` at th
 src/
   api.ts                  # apps/api client — all fetch calls live here
   useTheme.ts              # light/dark mode state, persisted to localStorage
+  geometryDraft.ts          # editable tier/obstruction/zone draft types used by the canvas
+  arcMath.ts                # arc tessellation and exact-segment-length math
   styles/tokens.css        # design system tokens (light/dark)
   components/
     TitleBlock.tsx          # persistent project/revision header, styled like a drawing title block
     WorkflowRail.tsx         # left-hand step navigation
-    FloorPlanSvg.tsx          # boundary/grid preview, shared by Geometry and Drawings
+    PolygonCanvas.tsx         # interactive boundary/obstruction/zone editor (click, drag, arc tool)
+    FloorPlanSvg.tsx          # read-only boundary/grid preview, shared by Geometry and Drawings
+    TierSelector.tsx           # tier-switching pills, shown when a revision has >1 tier
     Chip.tsx                 # pass/review status chip
     ThemeToggle.tsx            # light/dark mode switch
     DemoBanner.tsx            # GitHub Pages static-preview notice
   screens/
-    EnquiryScreen.tsx        # creates a project + first design revision
-    GeometryScreen.tsx       # boundary/grid preview + grid stats
+    EnquiryScreen.tsx        # project info + PolygonCanvas per tier + loads -> first design revision
+    GeometryScreen.tsx       # boundary/grid preview + grid stats, tier selector
     LoadsScreen.tsx           # edit loads -> new revision -> change-impact report
     DesignBomScreen.tsx      # member schedule + BOM summary
     PricingScreen.tsx         # price book admin (add/edit/delete)
     QuoteScreen.tsx          # generates/fetches the quote, links to the PDF export
-    DrawingsScreen.tsx        # boundary/grid preview + DXF/CSV downloads
+    DrawingsScreen.tsx        # boundary/grid preview + DXF/CSV downloads, tier selector
   data/workflow.ts        # the seven workflow step definitions (Enquiry -> ... -> Drawings)
 ```
 
