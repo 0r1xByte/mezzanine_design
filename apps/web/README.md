@@ -4,6 +4,10 @@ React + TypeScript single-page app (Vite) for the mezzanine design/quoting workf
 intake, geometry and grid review, design and BOM review, and quote generation with document
 exports.
 
+| Enquiry | Geometry & grid | Design & BOM | Quote |
+|---|---|---|---|
+| ![Enquiry](../../docs/screenshots/01-enquiry.png) | ![Geometry](../../docs/screenshots/03-geometry.png) | ![Design & BOM](../../docs/screenshots/02-design-bom.png) | ![Quote](../../docs/screenshots/04-quote.png) |
+
 ## What this actually is right now
 
 This app is a thin client over two backend services — it does not run any structural calculations
