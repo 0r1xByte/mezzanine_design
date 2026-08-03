@@ -1,3 +1,4 @@
+import cors from '@fastify/cors';
 import Fastify from 'fastify';
 import { designRevisionRoutes } from './routes/design-revisions.js';
 import { documentRoutes } from './routes/documents.js';
@@ -7,6 +8,10 @@ import { projectRoutes } from './routes/projects.js';
 import { quoteRoutes } from './routes/quotes.js';
 
 const app = Fastify({ logger: true });
+
+await app.register(cors, {
+  origin: process.env.WEB_ORIGIN ?? 'http://localhost:5173',
+});
 
 await app.register(healthRoutes);
 await app.register(projectRoutes);
