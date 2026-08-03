@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { FloorPlanSvg } from '../components/FloorPlanSvg';
+import { TierSelector } from '../components/TierSelector';
 import type { DesignRevision } from '../api';
 import './GeometryScreen.css';
 
@@ -7,25 +9,31 @@ interface GeometryScreenProps {
 }
 
 export function GeometryScreen({ revision }: GeometryScreenProps) {
-  const tier = revision.input.geometry.tiers[0];
-  const grid = revision.output.grids[0];
+  const [activeTier, setActiveTier] = useState(0);
+  const tierCount = revision.input.geometry.tiers.length;
+  const tier = revision.input.geometry.tiers[activeTier];
+  const grid = revision.output.grids[activeTier];
   const boundary = tier.boundary;
 
-  const widthM = Math.max(...boundary.map((v) => v.x));
-  const depthM = Math.max(...boundary.map((v) => v.y));
+  const widthM = Math.max(...boundary.map((v) => v.x)) - Math.min(...boundary.map((v) => v.x));
+  const depthM = Math.max(...boundary.map((v) => v.y)) - Math.min(...boundary.map((v) => v.y));
 
   return (
     <div className="main-pane">
       <div className="pane-head">
         <h2>Boundary &amp; grid</h2>
-        <span className="hint">Tier 1 of {revision.input.geometry.tiers.length}</span>
+        <span className="hint">
+          Tier {activeTier + 1} of {tierCount}
+        </span>
       </div>
       <p className="pane-sub">
-        Generated from the enquiry inputs — {widthM.toFixed(1)} × {depthM.toFixed(1)} m at{' '}
-        {tier.clear_height_m.toFixed(1)} m clear height.
+        {widthM.toFixed(1)} × {depthM.toFixed(1)} m at {tier.clear_height_m.toFixed(1)} m clear
+        height{tier.obstructions.length > 0 && `, ${tier.obstructions.length} obstruction(s)`}
+        {tier.constraint_zones.length > 0 && `, ${tier.constraint_zones.length} constraint zone(s)`}.
       </p>
+      <TierSelector count={tierCount} active={activeTier} onSelect={setActiveTier} />
       <div className="geo-layout">
-        <FloorPlanSvg revision={revision} />
+        <FloorPlanSvg revision={revision} tierIndex={activeTier} />
         <div className="side-panel">
           <div className="field-card">
             <h3>Boundary</h3>
@@ -42,6 +50,14 @@ export function GeometryScreen({ revision }: GeometryScreenProps) {
             <div className="field-row">
               <span className="k">Vertices</span>
               <span className="v mono">{boundary.length}</span>
+            </div>
+            <div className="field-row">
+              <span className="k">Obstructions</span>
+              <span className="v mono">{tier.obstructions.length}</span>
+            </div>
+            <div className="field-row">
+              <span className="k">Constraint zones</span>
+              <span className="v mono">{tier.constraint_zones.length}</span>
             </div>
           </div>
           <div className="field-card">

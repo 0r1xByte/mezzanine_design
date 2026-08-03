@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { FloorPlanSvg } from '../components/FloorPlanSvg';
+import { TierSelector } from '../components/TierSelector';
 import { drawingDxfUrl, materialTakeoffCsvUrl, type DesignRevision } from '../api';
 import './DrawingsScreen.css';
 
@@ -8,6 +10,9 @@ interface DrawingsScreenProps {
 }
 
 export function DrawingsScreen({ projectId, revision }: DrawingsScreenProps) {
+  const [activeTier, setActiveTier] = useState(0);
+  const tierCount = revision.input.geometry.tiers.length;
+
   return (
     <div className="main-pane">
       <div className="pane-head">
@@ -17,9 +22,11 @@ export function DrawingsScreen({ projectId, revision }: DrawingsScreenProps) {
       <p className="pane-sub">
         Generated from the same geometry and grid as the Geometry and Design &amp; BOM screens —
         the DXF is rendered by <span className="mono">services/calc-engine</span>, not redrawn here.
+        The DXF download includes every tier; the preview below shows one at a time.
       </p>
+      <TierSelector count={tierCount} active={activeTier} onSelect={setActiveTier} />
       <div className="drawings-layout">
-        <FloorPlanSvg revision={revision} />
+        <FloorPlanSvg revision={revision} tierIndex={activeTier} />
         <div className="side-panel">
           <div className="field-card">
             <h3>Exports</h3>
