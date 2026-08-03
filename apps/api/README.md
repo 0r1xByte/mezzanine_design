@@ -45,3 +45,13 @@ PLAN.md Section 4's revision-model note. `Quote` references a `DesignRevision`.
 - `POST /price-book`
 - `PUT /price-book/:id`
 - `DELETE /price-book/:id`
+- `POST /projects/:id/design-revisions/:revisionNumber/quote` — assembles line items from the
+  revision's BOM matched against the price book (by category + unit), plus any
+  `ancillarySelections` (stairs, gates, etc. — each priced independently of the BOM). Re-posting to
+  the same revision updates the existing quote rather than creating a new one.
+- `GET /projects/:id/design-revisions/:revisionNumber/quote`
+- `GET /quotes/:id`
+
+Quote totals (subtotal after markup, contingency, installation, grand total) are computed on read
+from `lineItems` + `markupPercent`/`contingencyPercent`/`installationTotal`, not stored, so editing
+any of those inputs keeps the numbers consistent without a re-save step.
