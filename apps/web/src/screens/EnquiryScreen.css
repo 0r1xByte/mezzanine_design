@@ -1,0 +1,53 @@
+.enquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 520px;
+}
+
+.enquiry-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+
+.enquiry-form label:last-child {
+  margin-bottom: 0;
+}
+
+.enquiry-form input,
+.enquiry-form select {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+
+.enquiry-form input:focus,
+.enquiry-form select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 14px;
+}
+
+.form-error {
+  background: var(--bad-soft);
+  color: var(--bad);
+  border-radius: 6px;
+  padding: 9px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+}

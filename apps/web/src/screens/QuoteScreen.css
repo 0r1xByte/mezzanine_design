@@ -64,24 +64,40 @@ table.lineitems th.num {
   font-weight: 650;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-secondary {
   display: block;
   text-align: center;
   width: 100%;
-  margin-top: 14px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border: none;
+  margin-top: 10px;
   border-radius: 7px;
   font-size: 13.5px;
   font-weight: 650;
   padding: 10px 0;
   cursor: pointer;
   font-family: inherit;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
 }
 
 .btn-primary:hover {
   filter: brightness(1.08);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-2);
 }
 
 .assumptions {

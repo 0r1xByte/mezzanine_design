@@ -1,17 +1,83 @@
-import { Fragment } from 'react';
-import { quoteAssumptions, quoteCategories, quoteTotals } from '../data/mock';
+import { Fragment, useEffect, useState } from 'react';
+import { drawingDxfUrl, generateQuote, getQuote, materialTakeoffCsvUrl, quotePdfUrl, type DesignRevision, type Quote } from '../api';
 import './QuoteScreen.css';
 
-export function QuoteScreen() {
+interface QuoteScreenProps {
+  projectId: string;
+  revision: DesignRevision;
+}
+
+const DEFAULT_MARKUP_PERCENT = 10;
+const DEFAULT_CONTINGENCY_PERCENT = 5;
+const DEFAULT_INSTALLATION_TOTAL = 8200;
+
+export function QuoteScreen({ projectId, revision }: QuoteScreenProps) {
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        let result: Quote;
+        try {
+          result = await getQuote(projectId, revision.revisionNumber);
+        } catch {
+          result = await generateQuote(projectId, revision.revisionNumber, {
+            markupPercent: DEFAULT_MARKUP_PERCENT,
+            contingencyPercent: DEFAULT_CONTINGENCY_PERCENT,
+            installationTotal: DEFAULT_INSTALLATION_TOTAL,
+          });
+        }
+        if (!cancelled) setQuote(result);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load quote.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId, revision.revisionNumber]);
+
+  if (loading) {
+    return (
+      <div className="main-pane">
+        <div className="pane-head">
+          <h2>Line items</h2>
+        </div>
+        <p className="pane-sub">Generating quote…</p>
+      </div>
+    );
+  }
+
+  if (error || !quote) {
+    return (
+      <div className="main-pane">
+        <div className="pane-head">
+          <h2>Line items</h2>
+        </div>
+        <div className="form-error">{error ?? 'No quote available.'}</div>
+      </div>
+    );
+  }
+
+  const categories = [...new Set(quote.lineItems.map((item) => item.category))];
+
   return (
     <div className="main-pane">
       <div className="pane-head">
         <h2>Line items</h2>
-        <span className="hint">Option A — 5.0 kN/m², no fire rating</span>
+        <span className="hint">Revision {revision.revisionNumber}</span>
       </div>
-      <p className="pane-sub">
-        Generated from BOM R4. Adjust quantities or rates here without touching the design.
-      </p>
+      <p className="pane-sub">Generated from BOM R{revision.revisionNumber}. Re-run the enquiry to reprice.</p>
       <div className="quote-grid">
         <div>
           <table className="lineitems">
@@ -25,46 +91,71 @@ export function QuoteScreen() {
               </tr>
             </thead>
             <tbody>
-              {quoteCategories.map((category) => (
-                <Fragment key={category.name}>
+              {categories.map((category) => (
+                <Fragment key={category}>
                   <tr className="cat-row">
-                    <td colSpan={5}>{category.name}</td>
+                    <td colSpan={5}>{category}</td>
                   </tr>
-                  {category.items.map((item) => (
-                    <tr key={item.description}>
-                      <td>{item.description}</td>
-                      <td className="num mono">{item.qty}</td>
-                      <td>{item.unit}</td>
-                      <td className="num mono">{item.rate}</td>
-                      <td className="num mono">{item.total}</td>
-                    </tr>
-                  ))}
+                  {quote.lineItems
+                    .filter((item) => item.category === category)
+                    .map((item, i) => (
+                      <tr key={i}>
+                        <td>{item.description}</td>
+                        <td className="num mono">{item.quantity}</td>
+                        <td>{item.unit}</td>
+                        <td className="num mono">{item.rate !== null ? `£${item.rate.toFixed(2)}` : '—'}</td>
+                        <td className="num mono">
+                          {item.total !== null ? `£${item.total.toFixed(2)}` : 'unpriced'}
+                        </td>
+                      </tr>
+                    ))}
                 </Fragment>
               ))}
             </tbody>
           </table>
-          <div className="assumptions">{quoteAssumptions}</div>
+          <div className="assumptions">{quote.assumptionsText}</div>
         </div>
         <div className="totals-card">
           <div className="trow">
             <span>Subtotal</span>
-            <span className="mono">{quoteTotals.subtotal}</span>
+            <span className="mono">£{quote.totals.subtotal.toFixed(2)}</span>
           </div>
           <div className="trow">
             <span>Installation</span>
-            <span className="mono">{quoteTotals.installation}</span>
+            <span className="mono">£{quote.totals.installation.toFixed(2)}</span>
           </div>
           <div className="trow">
-            <span>Contingency (5%)</span>
-            <span className="mono">{quoteTotals.contingency}</span>
+            <span>Contingency</span>
+            <span className="mono">£{quote.totals.contingency.toFixed(2)}</span>
           </div>
           <div className="trow grand">
             <span>Total</span>
-            <span className="mono">{quoteTotals.total}</span>
+            <span className="mono">£{quote.totals.total.toFixed(2)}</span>
           </div>
-          <button type="button" className="btn-primary">
+          <a
+            className="btn-primary"
+            href={quotePdfUrl(projectId, revision.revisionNumber)}
+            target="_blank"
+            rel="noreferrer"
+          >
             Export quotation PDF
-          </button>
+          </a>
+          <a
+            className="btn-secondary"
+            href={drawingDxfUrl(projectId, revision.revisionNumber)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Download sales drawing (DXF)
+          </a>
+          <a
+            className="btn-secondary"
+            href={materialTakeoffCsvUrl(projectId, revision.revisionNumber)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Download material take-off (CSV)
+          </a>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { workflowSteps, type WorkflowStepId } from '../data/mock';
+import { workflowSteps, type WorkflowStepId } from '../data/workflow';
 import './WorkflowRail.css';
 
 interface WorkflowRailProps {
