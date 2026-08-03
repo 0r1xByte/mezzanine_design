@@ -1,0 +1,42 @@
+.app-frame {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 560px;
+}
+
+.main-pane {
+  padding: 22px 26px 28px;
+}
+
+.pane-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.pane-head h2 {
+  font-size: 18px;
+  font-weight: 650;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.pane-head .hint {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+
+.pane-sub {
+  color: var(--ink-muted);
+  font-size: 13.5px;
+  margin: 0 0 18px;
+}
