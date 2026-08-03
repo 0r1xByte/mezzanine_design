@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { createDesignRevision, getRevisionImpact, type DesignRevision, type ImpactReport } from '../api';
+import { createDesignRevisionFromGeometry, getRevisionImpact, type DesignRevision, type ImpactReport } from '../api';
 import './LoadsScreen.css';
 
 interface LoadsScreenProps {
@@ -9,10 +9,6 @@ interface LoadsScreenProps {
 }
 
 export function LoadsScreen({ projectId, revision, onRevised }: LoadsScreenProps) {
-  const tier = revision.input.geometry.tiers[0];
-  const widthM = Math.max(...tier.boundary.map((v) => v.x));
-  const depthM = Math.max(...tier.boundary.map((v) => v.y));
-
   const [imposedKnM2, setImposedKnM2] = useState(revision.input.loads?.imposed_kn_m2 ?? 5.0);
   const [superimposedKnM2, setSuperimposedKnM2] = useState(
     revision.input.loads?.superimposed_kn_m2 ?? 0.5,
@@ -31,12 +27,9 @@ export function LoadsScreen({ projectId, revision, onRevised }: LoadsScreenProps
     setError(null);
     setImpact(null);
     try {
-      const newRevision = await createDesignRevision(projectId, {
-        widthM,
-        depthM,
-        clearHeightM: tier.clear_height_m,
-        imposedKnM2,
-        superimposedKnM2,
+      const newRevision = await createDesignRevisionFromGeometry(projectId, {
+        geometry: revision.input.geometry,
+        loads: { imposed_kn_m2: imposedKnM2, superimposed_kn_m2: superimposedKnM2 },
       });
       const report = await getRevisionImpact(projectId, newRevision.revisionNumber);
       setImpact(report);
