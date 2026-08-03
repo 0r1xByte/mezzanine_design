@@ -97,7 +97,7 @@ export interface Quote {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
+    headers: init?.body ? { 'Content-Type': 'application/json', ...init.headers } : init?.headers,
   });
   if (!response.ok) {
     const body = await response.text();
