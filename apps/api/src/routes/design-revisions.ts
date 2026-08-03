@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { CalcEngineError } from '../calc-engine-client.js';
+import { buildImpactReport } from '../change-impact.js';
 import {
   createDesignRevision,
   getDesignRevision,
@@ -57,6 +58,22 @@ export async function designRevisionRoutes(app: FastifyInstance) {
     return revision;
   });
 
+  app.get('/projects/:id/design-revisions/compare', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { from, to } = request.query as { from?: string; to?: string };
+    if (!from || !to) {
+      return reply.status(400).send({ error: 'from and to query params (revision numbers) are required' });
+    }
+    const [fromRevision, toRevision] = await Promise.all([
+      getDesignRevision(id, Number(from)),
+      getDesignRevision(id, Number(to)),
+    ]);
+    if (!fromRevision || !toRevision) {
+      return reply.status(404).send({ error: 'One or both revisions were not found' });
+    }
+    return buildImpactReport(fromRevision, toRevision);
+  });
+
   app.get('/projects/:id/design-revisions/:revisionNumber', async (request, reply) => {
     const { id, revisionNumber } = request.params as { id: string; revisionNumber: string };
     const revision = await getDesignRevision(id, Number(revisionNumber));
@@ -64,5 +81,30 @@ export async function designRevisionRoutes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'Design revision not found' });
     }
     return revision;
+  });
+
+  app.get('/projects/:id/design-revisions/:revisionNumber/impact', async (request, reply) => {
+    const { id, revisionNumber } = request.params as { id: string; revisionNumber: string };
+    const toNumber = Number(revisionNumber);
+    const [fromRevision, toRevision] = await Promise.all([
+      getDesignRevision(id, toNumber - 1),
+      getDesignRevision(id, toNumber),
+    ]);
+    if (!toRevision) {
+      return reply.status(404).send({ error: 'Design revision not found' });
+    }
+    if (!fromRevision) {
+      return reply.status(200).send({
+        fromRevision: null,
+        toRevision: toNumber,
+        changedInputSections: [],
+        memberChanges: [],
+        metricChanges: [],
+        warningChanges: [],
+        unchanged: false,
+        note: 'This is the first revision — nothing to compare against.',
+      });
+    }
+    return buildImpactReport(fromRevision, toRevision);
   });
 }

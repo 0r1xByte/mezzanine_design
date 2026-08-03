@@ -34,4 +34,9 @@ PLAN.md Section 4's revision-model note. `Quote` references a `DesignRevision`.
   result as a new `DesignRevision`.
 - `GET /projects/:id/design-revisions`
 - `GET /projects/:id/design-revisions/latest`
-- `GET /projects/:id/design-revisions/:revisionNumber`
+- `GET /projects/:id/design-revisions/compare?from=1&to=2` — change-impact report between any two
+  revisions (changed input sections, resized/added/removed members, steel weight and checks
+  deltas, new/resolved flags).
+- `GET /projects/:id/design-revisions/:revisionNumber` — a single revision.
+- `GET /projects/:id/design-revisions/:revisionNumber/impact` — shorthand for comparing a revision
+  against the one immediately before it.
