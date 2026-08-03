@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: mezzanine
+      POSTGRES_PASSWORD: mezzanine
+      POSTGRES_DB: mezzanine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mezzanine"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  calc-engine:
+    build:
+      context: ../services/calc-engine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../services/calc-engine:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  api:
+    build:
+      context: ../apps/api
+    environment:
+      DATABASE_URL: postgres://mezzanine:mezzanine@postgres:5432/mezzanine
+      CALC_ENGINE_URL: http://calc-engine:8000
+      PORT: "3001"
+    ports:
+      - "3001:3001"
+    volumes:
+      - ../apps/api:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      calc-engine:
+        condition: service_started
+
+  web:
+    build:
+      context: ../apps/web
+    environment:
+      VITE_API_URL: http://localhost:3001
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../apps/web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:

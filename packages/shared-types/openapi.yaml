@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Mezzanine Design & Quoting — Shared Schema
+  version: 0.1.0
+  description: >
+    Single source of truth for entities shared between apps/api (TypeScript) and
+    services/calc-engine (Python). Generate TS types and Pydantic models from this file so the
+    Node/Python boundary never drifts (PLAN.md Phase 0).
+paths: {}
+components:
+  schemas:
+    Project:
+      type: object
+      required: [id, name, client, usageType, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        client:
+          type: string
+        usageType:
+          type: string
+          enum: [storage, office, retail]
+        status:
+          type: string
+          enum: [enquiry, draft, reviewed, quoted]
+        createdAt:
+          type: string
+          format: date-time
