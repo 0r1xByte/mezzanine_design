@@ -16,7 +16,7 @@ rule-based simplified code check, a column grid, and a priced quote with PDF/DXF
 |---|---|
 | ![Design and BOM screen](docs/screenshots/02-design-bom.png) | ![Quote screen](docs/screenshots/04-quote.png) |
 
-The Quote screen's "Download sales drawing (DXF)" button pulls the plan view straight from
+The Drawings screen's "Download sales drawing (DXF)" button pulls the plan view straight from
 `services/calc-engine` — boundary, column grid, and (when present) obstructions:
 
 ![Sales drawing example, rendered from the DXF export](docs/screenshots/05-drawing.png)
@@ -44,10 +44,12 @@ infra/                 # docker-compose for local development (Postgres + all th
 
 The MVP described in PLAN.md Phases 1-4 is implemented end to end for the rectangular
 single-tier case: enquiry intake, geometry/grid generation with obstruction avoidance, simplified
-structural sizing, BOM, pricing, quote generation, and PDF/DXF/CSV exports. See each app's README
-for specifics — in particular [apps/web's README](apps/web/README.md), which is explicit about
-what's wired to live data versus still a placeholder (Loads/Pricing/Drawings screens, the
-polygon/obstruction drawing canvas). PLAN.md Phase 5 (pilot validation) hasn't started.
+structural sizing, BOM, load changes with a change-impact report, a price-book admin UI, quote
+generation, and PDF/DXF/CSV exports. See each app's README for specifics — in particular
+[apps/web's README](apps/web/README.md), which is explicit about the one remaining gap: the
+polygon/obstruction drawing canvas (the enquiry form only produces a rectangular single-tier
+floor; `services/calc-engine` already supports arbitrary polygons via the API). PLAN.md Phase 5
+(pilot validation) hasn't started.
 
 ## Running it locally
 

@@ -33,17 +33,16 @@ touches data will fail.
   status), summary stats (steel weight, deck area, checks passed, flags raised), and the
   assumptions list, all read directly from the revision's stored output.
 - **Quote** — generates (or fetches, if one already exists) a priced quote for the revision,
-  showing line items by category and totals (subtotal, installation, contingency, grand total).
-  Links to the PDF, DXF, and CSV exports point directly at `apps/api`'s document endpoints.
-
-**Not implemented — placeholders in the workflow rail:**
-
-- **Loads** — load inputs are currently only collected on the Enquiry form; there's no separate
-  screen to edit them after the fact.
-- **Pricing** — there's no price-book admin UI in this app yet (the API supports full CRUD —
-  see `apps/api`'s README — it's just not exposed here).
-- **Drawings** — the Quote screen links directly to the DXF/CSV downloads; there's no dedicated
-  drawings screen with a preview.
+  showing line items by category and totals (subtotal, installation, contingency, grand total),
+  with a link to the PDF export.
+- **Loads** — shows the current load case and lets you change it. Submitting creates a *new*
+  design revision (geometry unchanged) rather than mutating the current one, then shows the
+  change-impact report between the old and new revision (resized/added/removed members,
+  steel-weight and checks-passed deltas, new/resolved flags) via `apps/api`'s diff endpoint.
+- **Pricing** — a full price-book admin table: add, inline-edit, and delete rate entries. Talks
+  directly to `apps/api`'s `/price-book` CRUD routes.
+- **Drawings** — the same boundary/grid preview as Geometry (shared `FloorPlanSvg` component),
+  plus the DXF and material take-off CSV downloads (moved here from Quote).
 
 **Also not implemented:** the polygon/obstruction drawing canvas described in PLAN.md. The
 Enquiry form only produces a rectangular single-tier floor. `services/calc-engine` already
@@ -112,17 +111,23 @@ above. If/when the backend services get real hosting, point `VITE_API_URL` at th
 ```
 src/
   api.ts                  # apps/api client — all fetch calls live here
+  useTheme.ts              # light/dark mode state, persisted to localStorage
   styles/tokens.css        # design system tokens (light/dark)
   components/
     TitleBlock.tsx          # persistent project/revision header, styled like a drawing title block
     WorkflowRail.tsx         # left-hand step navigation
+    FloorPlanSvg.tsx          # boundary/grid preview, shared by Geometry and Drawings
     Chip.tsx                 # pass/review status chip
+    ThemeToggle.tsx            # light/dark mode switch
     DemoBanner.tsx            # GitHub Pages static-preview notice
   screens/
     EnquiryScreen.tsx        # creates a project + first design revision
-    GeometryScreen.tsx       # boundary/grid SVG, rendered from the live DesignRevision
-    DesignBomScreen.tsx      # member schedule + BOM summary, rendered from the live DesignRevision
-    QuoteScreen.tsx          # generates/fetches the quote, links to PDF/DXF/CSV exports
+    GeometryScreen.tsx       # boundary/grid preview + grid stats
+    LoadsScreen.tsx           # edit loads -> new revision -> change-impact report
+    DesignBomScreen.tsx      # member schedule + BOM summary
+    PricingScreen.tsx         # price book admin (add/edit/delete)
+    QuoteScreen.tsx          # generates/fetches the quote, links to the PDF export
+    DrawingsScreen.tsx        # boundary/grid preview + DXF/CSV downloads
   data/workflow.ts        # the seven workflow step definitions (Enquiry -> ... -> Drawings)
 ```
 
