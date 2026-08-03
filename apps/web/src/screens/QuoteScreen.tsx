@@ -9,7 +9,7 @@ interface QuoteScreenProps {
 
 const DEFAULT_MARKUP_PERCENT = 10;
 const DEFAULT_CONTINGENCY_PERCENT = 5;
-const DEFAULT_INSTALLATION_TOTAL = 8200;
+const DEFAULT_INSTALLATION_TOTAL = 15500; // AUD
 
 export function QuoteScreen({ projectId, revision }: QuoteScreenProps) {
   const [quote, setQuote] = useState<Quote | null>(null);
@@ -103,9 +103,9 @@ export function QuoteScreen({ projectId, revision }: QuoteScreenProps) {
                         <td>{item.description}</td>
                         <td className="num mono">{item.quantity}</td>
                         <td>{item.unit}</td>
-                        <td className="num mono">{item.rate !== null ? `£${item.rate.toFixed(2)}` : '—'}</td>
+                        <td className="num mono">{item.rate !== null ? `A$${item.rate.toFixed(2)}` : '—'}</td>
                         <td className="num mono">
-                          {item.total !== null ? `£${item.total.toFixed(2)}` : 'unpriced'}
+                          {item.total !== null ? `A$${item.total.toFixed(2)}` : 'unpriced'}
                         </td>
                       </tr>
                     ))}
@@ -118,19 +118,19 @@ export function QuoteScreen({ projectId, revision }: QuoteScreenProps) {
         <div className="totals-card">
           <div className="trow">
             <span>Subtotal</span>
-            <span className="mono">£{quote.totals.subtotal.toFixed(2)}</span>
+            <span className="mono">A${quote.totals.subtotal.toFixed(2)}</span>
           </div>
           <div className="trow">
             <span>Installation</span>
-            <span className="mono">£{quote.totals.installation.toFixed(2)}</span>
+            <span className="mono">A${quote.totals.installation.toFixed(2)}</span>
           </div>
           <div className="trow">
             <span>Contingency</span>
-            <span className="mono">£{quote.totals.contingency.toFixed(2)}</span>
+            <span className="mono">A${quote.totals.contingency.toFixed(2)}</span>
           </div>
           <div className="trow grand">
             <span>Total</span>
-            <span className="mono">£{quote.totals.total.toFixed(2)}</span>
+            <span className="mono">A${quote.totals.total.toFixed(2)}</span>
           </div>
           <a
             className="btn-primary"

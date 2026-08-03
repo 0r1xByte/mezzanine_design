@@ -2,12 +2,13 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Rates in AUD.
 const entries = [
-  { category: 'Structure', description: 'Structural steelwork - joists, beams, columns, bracing (S355)', unit: 'kg', rate: 1.85 },
-  { category: 'Decking', description: '6 mm chequer plate decking', unit: 'm2', rate: 38 },
-  { category: 'Access', description: 'Handrail, galvanised', unit: 'm', rate: 92 },
-  { category: 'Access', description: 'Straight staircase, 12 riser', unit: 'flight', rate: 3400 },
-  { category: 'Access', description: 'Pallet gate', unit: 'no.', rate: 680 },
+  { category: 'Structure', description: 'Structural steelwork - joists, beams, columns, bracing (S355)', unit: 'kg', rate: 3.50 },
+  { category: 'Decking', description: '6 mm chequer plate decking', unit: 'm2', rate: 72 },
+  { category: 'Access', description: 'Handrail, galvanised', unit: 'm', rate: 175 },
+  { category: 'Access', description: 'Straight staircase, 12 riser', unit: 'flight', rate: 6400 },
+  { category: 'Access', description: 'Pallet gate', unit: 'no.', rate: 1280 },
 ];
 
 async function main() {

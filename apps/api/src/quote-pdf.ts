@@ -53,8 +53,8 @@ export function renderQuotePdf(input: QuotePdfInput): PDFKit.PDFDocument {
       doc.text(item.description, colX.description, y, { width: 260 });
       doc.text(String(item.quantity), colX.qty, y);
       doc.text(item.unit, colX.unit, y);
-      doc.text(item.rate !== null ? item.rate.toFixed(2) : '—', colX.rate, y);
-      doc.text(item.total !== null ? item.total.toFixed(2) : 'unpriced', colX.total, y);
+      doc.text(item.rate !== null ? `A$${item.rate.toFixed(2)}` : '—', colX.rate, y);
+      doc.text(item.total !== null ? `A$${item.total.toFixed(2)}` : 'unpriced', colX.total, y);
       doc.moveDown(0.4);
     }
     doc.moveDown(0.3);
@@ -67,7 +67,7 @@ export function renderQuotePdf(input: QuotePdfInput): PDFKit.PDFDocument {
   const totalsRow = (label: string, value: number, bold = false) => {
     doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(bold ? 12 : 10);
     doc.text(label, 320, doc.y, { continued: true, width: 150 });
-    doc.text(value.toFixed(2), colX.total, doc.y);
+    doc.text(`A$${value.toFixed(2)}`, colX.total, doc.y);
   };
 
   totalsRow('Subtotal', input.totals.subtotal);
