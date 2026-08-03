@@ -10,3 +10,11 @@
   width: 100%;
   max-width: 1160px;
 }
+
+.app-shell-header {
+  width: 100%;
+  max-width: 1160px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}

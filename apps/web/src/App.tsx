@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DesignRevision, Project } from './api';
 import { DemoBanner } from './components/DemoBanner';
+import { ThemeToggle } from './components/ThemeToggle';
 import { TitleBlock } from './components/TitleBlock';
 import { WorkflowRail } from './components/WorkflowRail';
 import { EnquiryScreen } from './screens/EnquiryScreen';
@@ -8,6 +9,7 @@ import { GeometryScreen } from './screens/GeometryScreen';
 import { DesignBomScreen } from './screens/DesignBomScreen';
 import { QuoteScreen } from './screens/QuoteScreen';
 import type { WorkflowStepId } from './data/workflow';
+import { useTheme } from './useTheme';
 import './App.css';
 
 function PlaceholderScreen({ label }: { label: string }) {
@@ -33,6 +35,7 @@ function NoProjectScreen() {
 }
 
 export default function App() {
+  const [theme, toggleTheme] = useTheme();
   const [activeStep, setActiveStep] = useState<WorkflowStepId>('enquiry');
   const [project, setProject] = useState<Project | null>(null);
   const [revision, setRevision] = useState<DesignRevision | null>(null);
@@ -74,6 +77,9 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <div className="app-shell-header">
+        <ThemeToggle theme={theme} onToggle={toggleTheme} />
+      </div>
       {isDemoMode && <DemoBanner />}
       <div className="app-frame">
         <TitleBlock
